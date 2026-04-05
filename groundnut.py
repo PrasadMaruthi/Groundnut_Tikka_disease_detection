@@ -5,13 +5,16 @@ from PIL import Image
 
 ### Tensorflow Model Prediction
 def model_prediction(test_image):
-    model = tf.keras.models.load_model('tikka_model.h5')
-    image = tf.keras.preprocessing.image.load_img(test_image, target_size=(128, 128))
-    input_arr = tf.keras.preprocessing.image.img_to_array(image)
-    input_arr = np.array([input_arr])
+    model = load_model('tikka_model.h5')
+
+    image = Image.open(test_image).convert('RGB')
+    image = image.resize((128,128))
+
+    input_arr = np.array(image) / 255.0
+    input_arr = np.expand_dims(input_arr, axis=0)
+
     prediction = model.predict(input_arr)
-    result_index = np.argmax(prediction)
-    return result_index
+    return np.argmax(prediction)
 
 ## Sidebar
 st.sidebar.title("Dashboard")

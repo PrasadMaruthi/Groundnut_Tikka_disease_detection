@@ -1,20 +1,16 @@
 import streamlit as st
-from keras.models import load_model
+import tensorflow as tf
 import numpy as np
-from PIL import Image
 
 ### Tensorflow Model Prediction
 def model_prediction(test_image):
-    model = load_model('tikka_model.h5')
-
-    image = Image.open(test_image).convert('RGB')
-    image = image.resize((128,128))
-
-    input_arr = np.array(image) / 255.0
-    input_arr = np.expand_dims(input_arr, axis=0)
-
+    model = tf.keras.models.load_model('tikka_model.keras')
+    image = tf.keras.preprocessing.image.load_img(test_image, target_size=(128, 128))
+    input_arr = tf.keras.preprocessing.image.img_to_array(image)
+    input_arr = np.array([input_arr])
     prediction = model.predict(input_arr)
-    return np.argmax(prediction)
+    result_index = np.argmax(prediction)
+    return result_index
 
 ## Sidebar
 st.sidebar.title("Dashboard")

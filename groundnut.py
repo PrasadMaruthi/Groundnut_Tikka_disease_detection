@@ -46,7 +46,18 @@ app_mode = st.sidebar.selectbox(
 
 # Keep session state updated
 st.session_state.app_mode = app_mode
+# -----------------------------------------------------------
+# Get Started Button
+# -----------------------------------------------------------
 
+st.markdown("### 🚀 Ready to detect Groundnut Tikka Disease?")
+
+if st.button(
+    "🔍 Go to Disease Recognition",
+    use_container_width=True
+):
+    st.session_state.app_mode = "Disease Recognition"
+    st.rerun()
 ### Home Page
 if(app_mode=="Home"):
     st.header("🥜 GROUNDNUT TIKKA DISEASE RECOGNITION SYSTEM")
@@ -73,18 +84,7 @@ if(app_mode=="Home"):
     ✨ *AI-based solution for early disease detection in groundnut.*
 
 """)
-# -----------------------------------------------------------
-# Get Started Button
-# -----------------------------------------------------------
 
-st.markdown("### 🚀 Ready to detect Groundnut Tikka Disease?")
-
-if st.button(
-    "🔍 Go to Disease Recognition",
-    use_container_width=True
-):
-    st.session_state.app_mode = "Disease Recognition"
-    st.rerun()
 ### About Page 
 elif(app_mode=="About"): 
     st.header("About")

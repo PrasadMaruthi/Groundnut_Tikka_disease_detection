@@ -1,16 +1,42 @@
 import streamlit as st
 import tensorflow as tf
 import numpy as np
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.mobilenet_v3 import preprocess_input
+
+@st.cache_resource
+def load_model():
+    return tf.keras.models.load_model("GN_tikka_mobilenetv3_final.keras")
+
+model = load_model()
 
 ### Tensorflow Model Prediction
 def model_prediction(test_image):
-    model = tf.keras.models.load_model('GN_tikka_mobilenetv3_final.keras')
-    image = tf.keras.preprocessing.image.load_img(test_image, target_size=(224, 224))
-    input_arr = tf.keras.preprocessing.image.img_to_array(image)
-    input_arr = np.array([input_arr]) ##Convert single image to a batch
-    prediction = model.predict(input_arr)
+
+    img = image.load_img(
+        test_image,
+        target_size=(224,224)
+    )
+
+    input_arr = image.img_to_array(img)
+
+    input_arr = np.expand_dims(input_arr, axis=0)
+
+    # Same preprocessing used during training
+    input_arr = preprocess_input(input_arr)
+
+    prediction = model.predict(
+        input_arr,
+        verbose=0
+    )
+
     result_index = np.argmax(prediction)
-    return result_index
+
+    confidence = float(np.max(prediction)*100)
+
+    probabilities = prediction[0]
+
+    return result_index, confidence, probabilities
 
 ## Sidebar
 st.sidebar.title("Dashboard")
@@ -96,52 +122,75 @@ elif(app_mode=="Disease Recognition"):
     test_image = st.file_uploader("📤 Choose an Image:", type=["jpg", "jpeg", "png"])
 
     if test_image is not None:
-        if st.button("👁️ Show Image"):
-            st.image(test_image, caption="Uploaded Image", use_column_width=True)
 
-        if st.button("🔍 Predict"):
-            st.write("### 🧠 Prediction Result")
+    # Automatically display uploaded image
+    st.image(
+        test_image,
+        caption="Uploaded Image",
+        use_container_width=True
+    )
 
-            result_index = model_prediction(test_image)
+    if st.button("🔍 Predict"):
 
-            class_names = [
-                "Tikka Diseased Leaf",
-                "Healthy Leaf"
-            ]
+        st.write("### 🧠 Prediction Result")
 
-            st.success(f"🌱 Model Prediction: **{class_names[result_index]}**")
+        result_index, confidence, probabilities = model_prediction(test_image)
 
-    else:
-        st.warning("⚠️ Please upload an image to proceed.")
+        class_names = [
+            "Tikka Diseased Leaf",
+            "Healthy Leaf"
+        ]
 
-### Management Strategies Page
-elif(app_mode=="Management Strategies"):
-    st.header("🥜 Tikka Disease Management")
+        st.success(f"🌱 Model Prediction: **{class_names[result_index]}**")
 
-    st.markdown("""
-    Effective management of **Tikka disease in groundnut** is essential for maintaining crop health and yield.
-    
-    ---
-    ## 🟤 Tikka Diseased Leaf
-    - Use resistant varieties  
-    - Apply fungicides like **Mancozeb / Chlorothalonil**  
-    - Maintain proper spacing  
-    - Remove infected leaves  
-    
-    ---
-    
-    ## 🌱 Healthy Leaf
-    - Use certified seeds  
-    - Balanced fertilization  
-    - Regular monitoring  
-    
-    ---
-    
-    ## 🌟 General Recommendations
-    - Crop rotation  
-    - Field sanitation  
-    - Timely fungicide application  
-    
+        st.metric(
+            label="Prediction Confidence",
+            value=f"{confidence:.2f}%"
+        )
+
+        st.subheader("Prediction Probabilities")
+
+        st.write(
+            f"🟤 Tikka Diseased Leaf : {probabilities[0]*100:.2f}%"
+        )
+
+        st.write(
+            f"🟢 Healthy Leaf : {probabilities[1]*100:.2f}%"
+        )
+
+        st.progress(confidence/100)
+
+        # Disease-specific recommendation
+        if result_index == 0:
+
+            st.error("⚠️ Tikka Disease Detected")
+
+            st.markdown("""
+### Recommended Management
+
+- Use resistant varieties.
+- Remove infected leaves.
+- Maintain proper plant spacing.
+- Apply recommended fungicides (e.g., Mancozeb or Chlorothalonil) following local agricultural recommendations and label instructions.
+- Follow crop rotation and field sanitation.
+""")
+
+        else:
+
+            st.success("✅ Healthy Leaf")
+
+            st.markdown("""
+### Recommendation
+
+- Continue regular crop monitoring.
+- Use certified seeds.
+- Maintain balanced fertilization.
+- Follow good agronomic practices.
+""")
+
+else:
+
+    st.warning("⚠️ Please upload an image to proceed.")
     ---
     
     

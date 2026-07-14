@@ -101,7 +101,18 @@ elif(app_mode=="About"):
     --- 
     
     ## 🥜 About the Project 
-    The **Groundnut Tikka Disease Recognition System** is developed to detect **Tikka disease in groundnut leaves** using deep learning. 
+    - **Deep Learning Architecture:** MobileNetV3Small (Transfer Learning)
+    - **Framework:** TensorFlow 2.x / Keras
+    - **Pre-trained Weights:** ImageNet
+    - **Image Input Size:** 224 × 224 × 3 pixels
+    - **Classification Type:** Binary Image Classification
+    - **Output Classes:** Groundnut Tikka Diseased Leaf and Healthy Leaf
+    - **Training Strategy:** Transfer Learning with Fine-Tuning
+    - **Optimizer:** Adam
+    - **Performance Metric:** Validation Accuracy – 99.71%
+    - **Deployment Platform:** Streamlit
+    - **Application Domain:** Precision Agriculture and Plant Disease Detection
+    - **Primary Objective:** Early and accurate detection of Groundnut Tikka disease to support timely disease management and improve crop productivity. 
     
     --- 
     

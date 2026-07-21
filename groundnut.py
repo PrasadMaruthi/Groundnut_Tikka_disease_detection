@@ -118,17 +118,17 @@ elif(app_mode=="About"):
     
     ## 👨‍🔬 Development Team
     
-    **Maruthi Prasad B P**  
+    **Maruthi Prasad B. P.**  
     Department of Genetics and Plant Breeding  
     University of Agricultural Sciences, Bangalore  
     
-    **Harish J**  
+    **Harish J.**  
     Department of Plant Pathology  
     University of Agricultural Sciences, Bangalore  
     
-    **[Developer Name 3]**  
-    Department: *(Add here)*  
-    University: *(Add here)*  
+    **M.K. Prasannakumar**  
+    Department of Plant Pathology  
+    University of Agricultural Sciences, Bangalore  
     
     ---  
     
